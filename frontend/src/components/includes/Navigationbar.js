@@ -1,9 +1,9 @@
 import React from "react";
 import Home from "../pages/Home";
 import Medicion from "../pages/Medicion";
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
+import { Container } from "react-bootstrap";
+import { Navbar } from "react-bootstrap";
+import { Nav } from "react-bootstrap";
 import { Routes, Route, Link } from 'react-router-dom';
 
 
