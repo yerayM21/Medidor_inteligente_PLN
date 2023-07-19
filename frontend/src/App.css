@@ -1,38 +1,54 @@
-.App {
+.Body {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+.header {
+  padding: auto;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: black;
 }
 
-.App-link {
-  color: #61dafb;
+.mircophone-container{
+  border: 1px solid rgba(26, 224, 198, 0.87);
+  background-color: darkgrey;
+  padding: auto;
+  border-radius: 10px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.microphone-result-text{
+  min-height: 5vh;
+  background-color: white;
+  border-color: black;
+  border-radius: 10px;
+}
+
+.respuesta-busqueda{
+  min-height: 5vh;
+  background-color: white;
+  border-color: black;
+  border-radius: 10px;
+}
+
+.control-microphone{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+
+.card-menu{
+  padding: 10px;
+  min-height: 50vh;
+  border: 1px solid rgba(26, 224, 198, 0.87);
+  border-radius: 10px;
+  background-color: darkgrey;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
 }
