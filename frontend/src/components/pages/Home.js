@@ -17,6 +17,8 @@ function Home (){
     const [showTotal, setShowTotal] = useState(false);
     const [showTemp, setShowTemp] = useState(false);
     const[panelData, setPanelData] = useState([]);
+    const[tempData, setTepmData] = useState([]);
+    const[totalData, setTotalData] = useState([]);
 
     useEffect(()=>{
         const fetchPanelData = async ()=>{
@@ -27,11 +29,32 @@ function Home (){
                 console.log(error);
             }
         }
+        const fetchTempData = async ()=>{
+            try {
+                const res = await axios.get("http://localhost:8800/temperatura");
+                setTepmData(res.data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        const fetchTotalData = async ()=>{
+            try {
+                const res = await axios.get("http://localhost:8800/produccionTotal");
+                setTotalData(res.data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
         fetchPanelData();
+        fetchTotalData();
+        fetchTempData();
     }, []);
 
-    console.log(panelData);
-    const data = panelData.map((panel)=>({label: panel.nombrePanel, bar: panel.kilowatts}));
+    console.log(tempData);
+    console.log(totalData);
+    const dataP = panelData.map((panel)=>({label: panel.nombrePanel, bar: panel.kilowatts}));
+    const dataTemp = tempData.map((temperatura)=>({label: temperatura.captura, bar: temperatura.centigrados}));
+    const dataTotal = totalData.map((total)=>({label: total.captura, bar: total.watts}));
 
     const microphoneRef = useRef(null);
     if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
@@ -167,7 +190,7 @@ function Home (){
                             <BarChart 
                                 width={500}
                                 height={300}
-                                data={data}
+                                data={dataP}
                                 margin={{
                                   top: 5,
                                   right: 30,
@@ -203,7 +226,7 @@ function Home (){
                             <BarChart 
                                 width={500}
                                 height={300}
-                                data={data}
+                                data={dataTotal}
                                 margin={{
                                   top: 5,
                                   right: 30,
@@ -239,7 +262,7 @@ function Home (){
                             <BarChart 
                                 width={500}
                                 height={300}
-                                data={data}
+                                data={dataTemp}
                                 margin={{
                                   top: 5,
                                   right: 30,

@@ -25,6 +25,22 @@ app.get("/panel", (req,res)=>{
     })
 })
 
+app.get("/temperatura", (req,res)=>{
+    const q = "SELECT * FROM temperatura"
+    db.query(q,(err,data)=>{
+        if(err) return res.json("Ha ocurrido un error")
+        return res.json(data)
+    })
+})
+
+app.get("/produccionTotal", (req,res)=>{
+    const q = "SELECT * FROM totalwatts"
+    db.query(q,(err,data)=>{
+        if(err) return res.json("Ha ocurrido un error")
+        return res.json(data)
+    })
+})
+
 app.listen(8800, ()=>{
     console.log("conexion al backend");
 })
