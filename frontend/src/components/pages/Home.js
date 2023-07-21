@@ -1,13 +1,12 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Panel from "../images/panel-solar.png";
 import Paneles from "../images/paneles-solares.png";
 import Termometro from "../images/termometro.png";
-import { useRef, useState } from "react";
-import { Container, Row, Col, Accordion, Button, Card, Modal } from "react-bootstrap";
+import { Container, Row, Col, Accordion, Button, Card, Modal} from "react-bootstrap";
 import SpeechRecognition, {useSpeechRecognition} from "react-speech-recognition";
 import { useSpeechSynthesis } from 'react-speech-kit';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
+import axios from "axios";
 
 function Home (){
     const [respuesta, setRespuesta] = useState("");
@@ -17,29 +16,22 @@ function Home (){
     const [showPanel, setShowPanel] = useState(false);
     const [showTotal, setShowTotal] = useState(false);
     const [showTemp, setShowTemp] = useState(false);
+    const[panelData, setPanelData] = useState([]);
 
-    const data = [
-        {
-            nombre: 'Panel 1',
-            watts: 300,
-        },
-        {
-            nombre: 'Panel 2',
-            watts: 600,
-        },
-        {
-            nombre: 'Panel 3',
-            watts: 100,
-        },
-        {
-            nombre: 'Panel 4',
-            watts: 500,
-        },
-        {
-            nombre: 'Panel 5',
-            watts: 400,
+    useEffect(()=>{
+        const fetchPanelData = async ()=>{
+            try {
+                const res = await axios.get("http://localhost:8800/panel");
+                setPanelData(res.data);
+            } catch (error) {
+                console.log(error);
+            }
         }
-    ]
+        fetchPanelData();
+    }, []);
+
+    console.log(panelData);
+    const data = panelData.map((panel)=>({label: panel.nombrePanel, bar: panel.kilowatts}));
 
     const microphoneRef = useRef(null);
     if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
@@ -184,11 +176,11 @@ function Home (){
                                 }}
                             >
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="nombre" />
+                                <XAxis dataKey="label" />
                                 <YAxis />
                                 <Tooltip />
                                 <Legend />
-                                <Bar dataKey="watts" fill="#8884d8" />
+                                <Bar dataKey="bar" fill="#8884d8" />
                             </BarChart>
                         </ResponsiveContainer>
                     </Modal.Body>
@@ -220,11 +212,11 @@ function Home (){
                                 }}
                             >
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="nombre" />
+                                <XAxis dataKey="label" />
                                 <YAxis />
                                 <Tooltip />
                                 <Legend />
-                                <Bar dataKey="watts" fill="#8884d8" />
+                                <Bar dataKey="bar" fill="#8884d8" />
                             </BarChart>
                         </ResponsiveContainer>
                     </Modal.Body>
@@ -256,11 +248,11 @@ function Home (){
                                 }}
                             >
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="nombre" />
+                                <XAxis dataKey="label" />
                                 <YAxis />
                                 <Tooltip />
                                 <Legend />
-                                <Bar dataKey="watts" fill="#8884d8" />
+                                <Bar dataKey="bar" fill="#8884d8" />
                             </BarChart>
                         </ResponsiveContainer>
                     </Modal.Body>
