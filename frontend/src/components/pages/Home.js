@@ -50,11 +50,13 @@ function Home (){
         fetchTempData();
     }, []);
 
-    console.log(tempData);
-    console.log(totalData);
     const dataP = panelData.map((panel)=>({label: panel.nombrePanel, bar: panel.kilowatts}));
     const dataTemp = tempData.map((temperatura)=>({label: temperatura.captura, bar: temperatura.centigrados}));
     const dataTotal = totalData.map((total)=>({label: total.captura, bar: total.watts}));
+
+    const listaTemp = tempData.map((td)=>(td.centigrados));
+    const listaPanel = panelData.map((td)=>(td.kilowatts));
+    const listaTotal = totalData.map((td)=>(td.watts));
 
     const microphoneRef = useRef(null);
     if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
@@ -74,7 +76,11 @@ function Home (){
     const stopHandle = () => {
         setIsListening(false);
         if(transcript !== ""){
-            setRespuesta(createResponse(transcript));
+            if (transcript.indexOf("tabla") !== -1){
+                setShowPanel(true);
+            }else{
+                setRespuesta(createResponse(transcript, listaPanel, listaTemp, listaTotal));
+            }
         }
         microphoneRef.current.classList.remove("listening");
         SpeechRecognition.stopListening();
@@ -290,43 +296,43 @@ function Home (){
     );
 }
 
-function createResponse (search){
+function createResponse (search, panelData, tempData, totalData){
     var s = search;
-    var operacion="";
     var objeto="";
+    var produccion=0;
+    const panelD = [panelData];
+    const tempD = [tempData];
+    const totalD = [totalData];
 
 
-    if(s.indexOf("temperatura") !== -1){
-        return "La temperatura de hoy es: "
+    if(s.indexOf("total") !== -1){
+        let currentTot = totalD.at(totalD.length-1);
+        return "La produccion total de hoy es de: "+currentTot+""
+    } else if(s.indexOf("temperatura") !== -1 || s.indexOf("clima") !== -1){
+        let currentTemp = tempD.at(tempD.length-1);
+        return "La temperatura de hoy es: "+currentTemp+""
     } else {
-
-        if(s.indexOf("promedio") !== -1){
-            operacion="promedio";
-        } else if(s.indexOf("varianza") !== -1){
-            operacion="varianza";
-        } else if(s.indexOf("desviación") !== -1){
-            operacion="desviacion";
-        } else if(s.indexOf("producción") !== -1){
-            operacion="produccion";
-        } else{
-            return "Error en la busqueda";
-        };
 
         if(s.indexOf("panel 1") !== -1 || s.indexOf("panel uno") !== -1){
             objeto="panel 1";
+            produccion = panelD.at(0);
         } else if(s.indexOf("panel 2") !== -1 || s.indexOf("panel dos") !== -1){
+            produccion = panelD.at(1);
             objeto="panel 2";
         } else if(s.indexOf("panel 3") !== -1 || s.indexOf("panel tres") !== -1){
+            produccion = panelD.at(2);
             objeto="panel 3";
         } else if(s.indexOf("panel 4") !== -1 || s.indexOf("panel cuatro") !== -1){
+            produccion = panelD.at(3);
             objeto="panel 4";
         } else if(s.indexOf("panel 5") !== -1 || s.indexOf("panel cinco") !== -1){
+            produccion = panelD.at(4);
             objeto="panel 5";
         } else {
             return "Error en la busqueda";
         };
 
-        return "Se desea encontrar "+operacion+" de "+objeto;
+        return "La produccion del "+objeto+" es de "+produccion+"";
     }
 }
 
