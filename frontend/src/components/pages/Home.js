@@ -1,8 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import Panel from "../images/panel-solar.png";
-import Paneles from "../images/paneles-solares.png";
-import Termometro from "../images/termometro.png";
-import { Container, Row, Col, Accordion, Button, Card, Modal} from "react-bootstrap";
+import { Container, Row, Col, Accordion, Button, Modal} from "react-bootstrap";
 import SpeechRecognition, {useSpeechRecognition} from "react-speech-recognition";
 import { useSpeechSynthesis } from 'react-speech-kit';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -50,13 +47,19 @@ function Home (){
         fetchTempData();
     }, []);
 
+    const fetchPanelProd = async (nombrePanel)=>{
+        try {
+            const res = await axios.get('http://localhost:8800/panel/'+nombrePanel);
+            var aux = res.data;
+            console.log(aux);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const dataP = panelData.map((panel)=>({label: panel.nombrePanel, bar: panel.kilowatts}));
     const dataTemp = tempData.map((temperatura)=>({label: temperatura.captura, bar: temperatura.centigrados}));
     const dataTotal = totalData.map((total)=>({label: total.captura, bar: total.watts}));
-
-    const listaTemp = tempData.map((td)=>(td.centigrados));
-    const listaPanel = panelData.map((td)=>(td.kilowatts));
-    const listaTotal = totalData.map((td)=>(td.watts));
 
     const microphoneRef = useRef(null);
     if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
@@ -75,12 +78,33 @@ function Home (){
     };
     const stopHandle = () => {
         setIsListening(false);
+
         if(transcript !== ""){
-            if (transcript.indexOf("tabla") !== -1){
-                setShowPanel(true);
-            }else{
-                setRespuesta(createResponse(transcript, listaPanel, listaTemp, listaTotal));
-            }
+            if (transcript.indexOf("tabla") !== -1 || transcript.indexOf("grafica") !== -1){
+
+                if(transcript.indexOf("temperatura") !== -1){
+                    setShowTemp(true);
+                } else if(transcript.indexOf("panel") !== -1){
+                    setShowPanel(true);
+                } else if(transcript.indexOf("total") !== -1){
+                    setShowTotal(true);
+                } else setRespuesta("Error en busqueda");
+
+            } else if(transcript.indexOf("panel 1") !== -1 || transcript.indexOf("panel uno") !== -1){
+                fetchPanelProd("panel1");
+            } else if(transcript.indexOf("panel 2") !== -1 || transcript.indexOf("panel dos") !== -1){
+                fetchPanelProd("panel2");
+                //setRespuesta("El ultimo registro del Panel dos es de: "+panelDataProd.kilowatts);
+            } else if(transcript.indexOf("panel 3") !== -1 || transcript.indexOf("panel tres") !== -1){
+                fetchPanelProd("panel3");
+                //setRespuesta("El ultimo registro del Panel tres es de: "+panelDataProd.kilowatts);
+            } else if(transcript.indexOf("panel 4") !== -1 || transcript.indexOf("panel cuatro") !== -1){
+                fetchPanelProd("panel4");
+                //setRespuesta("El ultimo registro del Panel cuatro es de: "+panelDataProd.kilowatts);
+            } else if(transcript.indexOf("panel 5") !== -1 || transcript.indexOf("panel cinco") !== -1){
+                fetchPanelProd("panel5");
+                //setRespuesta("El ultimo registro del Panel cinco es de: "+panelDataProd.kilowatts);
+            } else setRespuesta("Error en busqueda");
         }
         microphoneRef.current.classList.remove("listening");
         SpeechRecognition.stopListening();
@@ -150,36 +174,14 @@ function Home (){
                     </Row>
                     <br/>
                     <div className="card-menu">
-                        <Card style={{ width: '18rem' }}>
-                            <Card.Img variant="top" src={Panel} />
-                            <Card.Body>
-                                <Card.Title>Produccion diaria por pannel</Card.Title>
-                                <Card.Text>
-                                    Muestra la produccion generada por cada panel el dia de hoy
-                                </Card.Text>
-                                <Button variant="primary" onClick={() => setShowPanel(true)}>Mostrar</Button>
-                            </Card.Body>
-                        </Card>
-                        <Card style={{ width: '18rem' }}>
-                            <Card.Img variant="top" src={Paneles} />
-                            <Card.Body>
-                                <Card.Title>Produccion semanal</Card.Title>
-                                <Card.Text>
-                                    Muestra la produccion total de los ultimos 7 dias
-                                </Card.Text>
-                                <Button variant="primary" onClick={() => setShowTotal(true)}>Mostrar</Button>
-                            </Card.Body>
-                        </Card>
-                        <Card style={{ width: '18rem' }}>
-                            <Card.Img variant="top" src={Termometro} />
-                            <Card.Body>
-                                <Card.Title>Temperarura ambiental</Card.Title>
-                                <Card.Text>
-                                    Muestra la temperatura ambiental de los ultimos 7 dias
-                                </Card.Text>
-                                <Button variant="primary" onClick={() => setShowTemp(true)}>Mostrar</Button>
-                            </Card.Body>
-                        </Card>
+                        <Accordion>
+                            <Accordion.Item eventKey="0">
+                                <Accordion.Header>Ejemplos</Accordion.Header>
+                                <Accordion.Body>
+                                    <p>Ejemplos</p>
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        </Accordion>
                     </div>
                 </Container>
 
@@ -296,44 +298,6 @@ function Home (){
     );
 }
 
-function createResponse (search, panelData, tempData, totalData){
-    var s = search;
-    var objeto="";
-    var produccion=0;
-    const panelD = [panelData];
-    const tempD = [tempData];
-    const totalD = [totalData];
 
-
-    if(s.indexOf("total") !== -1){
-        let currentTot = totalD.at(totalD.length-1);
-        return "La produccion total de hoy es de: "+currentTot+""
-    } else if(s.indexOf("temperatura") !== -1 || s.indexOf("clima") !== -1){
-        let currentTemp = tempD.at(tempD.length-1);
-        return "La temperatura de hoy es: "+currentTemp+""
-    } else {
-
-        if(s.indexOf("panel 1") !== -1 || s.indexOf("panel uno") !== -1){
-            objeto="panel 1";
-            produccion = panelD.at(0);
-        } else if(s.indexOf("panel 2") !== -1 || s.indexOf("panel dos") !== -1){
-            produccion = panelD.at(1);
-            objeto="panel 2";
-        } else if(s.indexOf("panel 3") !== -1 || s.indexOf("panel tres") !== -1){
-            produccion = panelD.at(2);
-            objeto="panel 3";
-        } else if(s.indexOf("panel 4") !== -1 || s.indexOf("panel cuatro") !== -1){
-            produccion = panelD.at(3);
-            objeto="panel 4";
-        } else if(s.indexOf("panel 5") !== -1 || s.indexOf("panel cinco") !== -1){
-            produccion = panelD.at(4);
-            objeto="panel 5";
-        } else {
-            return "Error en la busqueda";
-        };
-
-        return "La produccion del "+objeto+" es de "+produccion+"";
-    }
-}
 
 export default Home;

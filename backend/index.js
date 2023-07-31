@@ -41,6 +41,15 @@ app.get("/produccionTotal", (req,res)=>{
     })
 })
 
+app.get("/panel/:nombrePanel", (req,res)=>{
+    const panelName = req.params.nombrePanel;
+    const q = "SELECT kilowatts FROM panel WHERE nombrePanel = ? ORDER BY idPanel DESC LIMIT 1";
+    db.query(q, [panelName], (err,data)=>{
+        if(err) return res.json("Ha ocurrido un error")
+        return res.json(data)
+    })
+})
+
 app.listen(8800, ()=>{
     console.log("conexion al backend");
 })
