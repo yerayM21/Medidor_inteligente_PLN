@@ -50,6 +50,38 @@ app.get("/panel/:nombrePanel", (req,res)=>{
     })
 })
 
+app.get("/temperatura/actual", (req,res)=>{
+    const q = "SELECT centigrados FROM temperatura ORDER BY idtemperatura DESC LIMIT 1";
+    db.query(q,(err,data)=>{
+        if(err) return res.json("Ha ocurrido un error")
+        return res.json(data)
+    })
+})
+
+app.get("/temperatura/ayer", (req,res)=>{
+    const q = "SELECT centigrados FROM temperatura ORDER BY idtemperatura DESC LIMIT 1,1";
+    db.query(q,(err,data)=>{
+        if(err) return res.json("Ha ocurrido un error")
+        return res.json(data)
+    })
+})
+
+app.get("/produccionTotal/actual", (req,res)=>{
+    const q = "SELECT watts FROM totalwatts ORDER BY idwatts DESC LIMIT 1";
+    db.query(q,(err,data)=>{
+        if(err) return res.json("Ha ocurrido un error")
+        return res.json(data)
+    })
+})
+
+app.get("/produccionTotal/ayer", (req,res)=>{
+    const q = "SELECT watts FROM totalwatts ORDER BY idwatts DESC LIMIT 1,1";
+    db.query(q,(err,data)=>{
+        if(err) return res.json("Ha ocurrido un error")
+        return res.json(data)
+    })
+})
+
 app.listen(8800, ()=>{
     console.log("conexion al backend");
 })
