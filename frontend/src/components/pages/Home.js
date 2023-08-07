@@ -50,8 +50,9 @@ function Home (){
     const fetchPanelProd = async (nombrePanel)=>{
         try {
             const res = await axios.get('http://localhost:8800/panel/'+nombrePanel);
-            var aux = res.data;
-            console.log(aux);
+            let aux = [res.data];
+            var resp = JSON.stringify(aux);
+            console.log(resp);
         } catch (error) {
             console.log(error);
         }
@@ -94,16 +95,12 @@ function Home (){
                 fetchPanelProd("panel1");
             } else if(transcript.indexOf("panel 2") !== -1 || transcript.indexOf("panel dos") !== -1){
                 fetchPanelProd("panel2");
-                //setRespuesta("El ultimo registro del Panel dos es de: "+panelDataProd.kilowatts);
             } else if(transcript.indexOf("panel 3") !== -1 || transcript.indexOf("panel tres") !== -1){
                 fetchPanelProd("panel3");
-                //setRespuesta("El ultimo registro del Panel tres es de: "+panelDataProd.kilowatts);
             } else if(transcript.indexOf("panel 4") !== -1 || transcript.indexOf("panel cuatro") !== -1){
                 fetchPanelProd("panel4");
-                //setRespuesta("El ultimo registro del Panel cuatro es de: "+panelDataProd.kilowatts);
             } else if(transcript.indexOf("panel 5") !== -1 || transcript.indexOf("panel cinco") !== -1){
                 fetchPanelProd("panel5");
-                //setRespuesta("El ultimo registro del Panel cinco es de: "+panelDataProd.kilowatts);
             } else setRespuesta("Error en busqueda");
         }
         microphoneRef.current.classList.remove("listening");
@@ -149,6 +146,9 @@ function Home (){
                                         <Button onClick={() => speak({ text: respuesta })}>Escuchar</Button>
                                         <Button className="microphone-reset btn" onClick={handleReset}>
                                             Reiniciar
+                                        </Button>
+                                        <Button onClick={() => fetchPanelProd("panel1")}>
+                                            aux
                                         </Button>
                                     </div>
                                     <br/>
