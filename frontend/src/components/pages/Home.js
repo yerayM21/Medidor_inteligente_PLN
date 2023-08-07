@@ -51,8 +51,27 @@ function Home (){
         try {
             const res = await axios.get('http://localhost:8800/panel/'+nombrePanel);
             let aux = [res.data];
-            var resp = JSON.stringify(aux);
+            let auxA = JSON.stringify(aux);
+            let auxB = auxA.replace('[[{"kilowatts":', "");
+            let resp = "El panel buscado tuvo una produccion de: "+auxB.replace('}]]', "")+" kilowatts";
             console.log(resp);
+            setRespuesta(resp);
+            speak({ text: resp })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const fetchCurrentWeather = async () =>{
+        try {
+            const res = await axios.get('http://localhost:8800/temperatura/actual');
+            let aux = [res.data];
+            let auxA = JSON.stringify(aux);
+            let auxB = auxA.replace('[[{"centigrados":', "");
+            let resp = "La temperatura de hoy es de "+auxB.replace('}]]', "")+" grados centigrados";
+            console.log(resp);
+            setRespuesta(resp);
+            speak({ text: resp })
         } catch (error) {
             console.log(error);
         }
@@ -147,7 +166,7 @@ function Home (){
                                         <Button className="microphone-reset btn" onClick={handleReset}>
                                             Reiniciar
                                         </Button>
-                                        <Button onClick={() => fetchPanelProd("panel1")}>
+                                        <Button onClick={() => fetchCurrentWeather()}>
                                             aux
                                         </Button>
                                     </div>
