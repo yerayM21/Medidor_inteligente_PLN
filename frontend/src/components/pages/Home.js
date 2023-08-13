@@ -77,6 +77,21 @@ function Home (){
         }
     }
 
+    const fetchPreviousWeather = async () =>{
+        try {
+            const res = await axios.get('http://localhost:8800/temperatura/ayer');
+            let aux = [res.data];
+            let auxA = JSON.stringify(aux);
+            let auxB = auxA.replace('[[{"centigrados":', "");
+            let resp = "La temperatura de ayer es de "+auxB.replace('}]]', "")+" grados centigrados";
+            console.log(resp);
+            setRespuesta(resp);
+            speak({ text: resp })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const dataP = panelData.map((panel)=>({label: panel.nombrePanel, bar: panel.kilowatts}));
     const dataTemp = tempData.map((temperatura)=>({label: temperatura.captura, bar: temperatura.centigrados}));
     const dataTotal = totalData.map((total)=>({label: total.captura, bar: total.watts}));
@@ -120,7 +135,21 @@ function Home (){
                 fetchPanelProd("panel4");
             } else if(transcript.indexOf("panel 5") !== -1 || transcript.indexOf("panel cinco") !== -1){
                 fetchPanelProd("panel5");
-            } else setRespuesta("Error en busqueda");
+            } else  if (transcript.indexOf("temperatura") !== -1 || transcript.indexOf("clima") !== -1) {
+                if (transcript.indexOf("ayer") !== -1 || transcript.indexOf("anterior") !== -1) {
+                    fetchPreviousWeather();
+                } else {
+                    fetchCurrentWeather();
+                }
+
+            } else if(transcript.indexOf("total") !== -1){
+                if (transcript.indexOf("ayer") !== -1 || transcript.indexOf("anterior") !== -1) {
+                    
+                } else {
+                    
+                }
+            }
+            setRespuesta("Error en busqueda");
         }
         microphoneRef.current.classList.remove("listening");
         SpeechRecognition.stopListening();
