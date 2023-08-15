@@ -195,7 +195,7 @@ function Home (){
                                         <Button className="microphone-reset btn" onClick={handleReset}>
                                             Reiniciar
                                         </Button>
-                                        <Button onClick={() => fetchCurrentWeather()}>
+                                        <Button onClick={() => setShowPanel(true)}>
                                             aux
                                         </Button>
                                     </div>

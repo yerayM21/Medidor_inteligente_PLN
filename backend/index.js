@@ -18,7 +18,7 @@ app.get("/", (req,res)=>{
 })
 
 app.get("/panel", (req,res)=>{
-    const q = "SELECT * FROM panel"
+    const q = "SELECT * FROM (SELECT * FROM panel ORDER BY idPanel DESC LIMIT 5) VAR1 ORDER BY idpanel ASC"
     db.query(q,(err,data)=>{
         if(err) return res.json("Ha ocurrido un error")
         return res.json(data)
@@ -26,7 +26,7 @@ app.get("/panel", (req,res)=>{
 })
 
 app.get("/temperatura", (req,res)=>{
-    const q = "SELECT * FROM temperatura"
+    const q = "SELECT * FROM (SELECT * FROM temperatura ORDER BY idtemperatura DESC LIMIT 7) VAR1 ORDER BY idtemperatura ASC"
     db.query(q,(err,data)=>{
         if(err) return res.json("Ha ocurrido un error")
         return res.json(data)
@@ -34,7 +34,7 @@ app.get("/temperatura", (req,res)=>{
 })
 
 app.get("/produccionTotal", (req,res)=>{
-    const q = "SELECT * FROM totalwatts"
+    const q = "SELECT * FROM (SELECT * FROM totalwatts ORDER BY idwatts DESC LIMIT 7) VAR1 ORDER BY idwatts ASC"
     db.query(q,(err,data)=>{
         if(err) return res.json("Ha ocurrido un error")
         return res.json(data)
