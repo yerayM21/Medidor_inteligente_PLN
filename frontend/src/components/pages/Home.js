@@ -83,7 +83,37 @@ function Home (){
             let aux = [res.data];
             let auxA = JSON.stringify(aux);
             let auxB = auxA.replace('[[{"centigrados":', "");
-            let resp = "La temperatura de ayer es de "+auxB.replace('}]]', "")+" grados centigrados";
+            let resp = "La temperatura de ayer fue de "+auxB.replace('}]]', "")+" grados centigrados";
+            console.log(resp);
+            setRespuesta(resp);
+            speak({ text: resp })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const fetchCurrentTotal = async () =>{
+        try {
+            const res = await axios.get('http://localhost:8800/produccionTotal/actual');
+            let aux = [res.data];
+            let auxA = JSON.stringify(aux);
+            let auxB = auxA.replace('[[{"kilowatts":', "");
+            let resp = "La produccion total de hoy es de "+auxB.replace('}]]', "")+" kilowatts";
+            console.log(resp);
+            setRespuesta(resp);
+            speak({ text: resp })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const fetchPreviousTotal = async () =>{
+        try {
+            const res = await axios.get('http://localhost:8800/produccionTotal/ayer');
+            let aux = [res.data];
+            let auxA = JSON.stringify(aux);
+            let auxB = auxA.replace('[[{"kilowatts":', "");
+            let resp = "La produccion total de hoy es de "+auxB.replace('}]]', "")+" kilowatts";
             console.log(resp);
             setRespuesta(resp);
             speak({ text: resp })
@@ -125,16 +155,19 @@ function Home (){
                     setShowTotal(true);
                 } else setRespuesta("Error en busqueda");
 
-            } else if(transcript.indexOf("panel 1") !== -1 || transcript.indexOf("panel uno") !== -1){
-                fetchPanelProd("panel1");
-            } else if(transcript.indexOf("panel 2") !== -1 || transcript.indexOf("panel dos") !== -1){
-                fetchPanelProd("panel2");
-            } else if(transcript.indexOf("panel 3") !== -1 || transcript.indexOf("panel tres") !== -1){
-                fetchPanelProd("panel3");
-            } else if(transcript.indexOf("panel 4") !== -1 || transcript.indexOf("panel cuatro") !== -1){
-                fetchPanelProd("panel4");
-            } else if(transcript.indexOf("panel 5") !== -1 || transcript.indexOf("panel cinco") !== -1){
-                fetchPanelProd("panel5");
+            } else if(transcript.indexOf("panel") !== -1){
+                if(transcript.indexOf("panel 1") !== -1 || transcript.indexOf("panel uno") !== -1){
+                    fetchPanelProd("panel1");
+                } else if(transcript.indexOf("panel 2") !== -1 || transcript.indexOf("panel dos") !== -1){
+                    fetchPanelProd("panel2");
+                } else if(transcript.indexOf("panel 3") !== -1 || transcript.indexOf("panel tres") !== -1){
+                    fetchPanelProd("panel3");
+                } else if(transcript.indexOf("panel 4") !== -1 || transcript.indexOf("panel cuatro") !== -1){
+                    fetchPanelProd("panel4");
+                } else if(transcript.indexOf("panel 5") !== -1 || transcript.indexOf("panel cinco") !== -1){
+                    fetchPanelProd("panel5");
+                }
+                
             } else  if (transcript.indexOf("temperatura") !== -1 || transcript.indexOf("clima") !== -1) {
                 if (transcript.indexOf("ayer") !== -1 || transcript.indexOf("anterior") !== -1) {
                     fetchPreviousWeather();
@@ -144,13 +177,12 @@ function Home (){
 
             } else if(transcript.indexOf("total") !== -1){
                 if (transcript.indexOf("ayer") !== -1 || transcript.indexOf("anterior") !== -1) {
-                    
+                    fetchPreviousTotal();
                 } else {
-                    
+                    fetchCurrentTotal();
                 }
-            }
-            setRespuesta("Error en busqueda");
-        }
+            } else setRespuesta("Error en busqueda");
+        } 
         microphoneRef.current.classList.remove("listening");
         SpeechRecognition.stopListening();
     };
