@@ -54,7 +54,7 @@ app.get("/panel/:nombrePanel/:captura", (req,res)=>{
     const panelName = req.params.nombrePanel;
     const captura = req.params.captura;
     const q = "SELECT kilowatts FROM panel WHERE nombrePanel = ? AND captura = ?";
-    db.query(q, [panelName], [captura], (err,data)=>{
+    db.query(q, [panelName, captura], (err,data)=>{
         if(err) return res.json("Ha ocurrido un error")
         return res.json(data)
     })
