@@ -52,11 +52,15 @@ function Home (){
             const res = await axios.get('http://localhost:8800/panel/'+nombrePanel);
             let aux = [res.data];
             let auxA = JSON.stringify(aux);
-            let auxB = auxA.replace('[[{"kilowatts":', "");
-            let resp = "El panel buscado tuvo una produccion de: "+auxB.replace('}]]', "")+" kilowatts";
-            console.log(resp);
-            setRespuesta(resp);
-            speak({ text: resp })
+            if (auxA === "[[]]") {
+                setRespuesta("Error no se pudo encontrar la informacion especificada");
+            } else {
+                let auxB = auxA.replace('[[{"kilowatts":', "");
+                let resp = "El panel buscado tuvo una produccion de: "+auxB.replace('}]]', "")+" kilowatts";
+                console.log(resp);
+                setRespuesta(resp);
+                speak({ text: resp }); 
+            }
         } catch (error) {
             console.log(error);
         }
@@ -67,11 +71,15 @@ function Home (){
             const res = await axios.get('http://localhost:8800/panel/'+nombrePanel+'/'+captura);
             let aux = [res.data];
             let auxA = JSON.stringify(aux);
-            let auxB = auxA.replace('[[{"kilowatts":', "");
-            let resp = "El panel buscado tuvo una produccion de: "+auxB.replace('}]]', "")+" kilowatts";
-            console.log(resp);
-            setRespuesta(resp);
-            speak({ text: resp })
+            if (auxA === "[[]]") {
+                setRespuesta("Error no se pudo encontrar la informacion especificada");
+            } else {
+                let auxB = auxA.replace('[[{"kilowatts":', "");
+                let resp = "El panel buscado tuvo una produccion de: "+auxB.replace('}]]', "")+" kilowatts";
+                console.log(resp);
+                setRespuesta(resp);
+                speak({ text: resp })   
+            }
         } catch (error) {
             console.log(error);
         }
@@ -82,11 +90,15 @@ function Home (){
             const res = await axios.get('http://localhost:8800/temperatura/actual');
             let aux = [res.data];
             let auxA = JSON.stringify(aux);
-            let auxB = auxA.replace('[[{"centigrados":', "");
-            let resp = "La temperatura de hoy es de "+auxB.replace('}]]', "")+" grados centigrados";
-            console.log(resp);
-            setRespuesta(resp);
-            speak({ text: resp })
+            if (auxA === "[[]]") {
+                setRespuesta("Error no se pudo encontrar la informacion especificada");
+            } else {
+                let auxB = auxA.replace('[[{"centigrados":', "");
+                let resp = "La temperatura de hoy es de "+auxB.replace('}]]', "")+" grados centigrados";
+                console.log(resp);
+                setRespuesta(resp);
+                speak({ text: resp })   
+            }
         } catch (error) {
             console.log(error);
         }
@@ -97,11 +109,15 @@ function Home (){
             const res = await axios.get('http://localhost:8800/temperatura/ayer');
             let aux = [res.data];
             let auxA = JSON.stringify(aux);
-            let auxB = auxA.replace('[[{"centigrados":', "");
-            let resp = "La temperatura de ayer fue de "+auxB.replace('}]]', "")+" grados centigrados";
-            console.log(resp);
-            setRespuesta(resp);
-            speak({ text: resp })
+            if (auxA === "[[]]") {
+                setRespuesta("Error no se pudo encontrar la informacion especificada");
+            } else {
+                let auxB = auxA.replace('[[{"centigrados":', "");
+                let resp = "La temperatura de ayer fue de "+auxB.replace('}]]', "")+" grados centigrados";
+                console.log(resp);
+                setRespuesta(resp);
+                speak({ text: resp })   
+            }
         } catch (error) {
             console.log(error);
         }
@@ -112,11 +128,15 @@ function Home (){
             const res = await axios.get('http://localhost:8800/temperatura/'+captura);
             let aux = [res.data];
             let auxA = JSON.stringify(aux);
-            let auxB = auxA.replace('[[{"centigrados":', "");
-            let resp = "La temperatura de en la fecha especificada fue de "+auxB.replace('}]]', "")+" grados centigrados";
-            console.log(resp);
-            setRespuesta(resp);
-            speak({ text: resp })
+            if (auxA === "[[]]") {
+                setRespuesta("Error no se pudo encontrar la informacion especificada");
+            } else {
+                let auxB = auxA.replace('[[{"centigrados":', "");
+                let resp = "La temperatura de en la fecha especificada fue de "+auxB.replace('}]]', "")+" grados centigrados";
+                console.log(resp);
+                setRespuesta(resp);
+                speak({ text: resp })   
+            }
         } catch (error) {
             console.log(error);
         }
@@ -127,11 +147,15 @@ function Home (){
             const res = await axios.get('http://localhost:8800/produccionTotal/actual');
             let aux = [res.data];
             let auxA = JSON.stringify(aux);
-            let auxB = auxA.replace('[[{"watts":', "");
-            let resp = "La produccion total de hoy es de "+auxB.replace('}]]', "")+" kilowatts";
-            console.log(resp);
-            setRespuesta(resp);
-            speak({ text: resp })
+            if (auxA === "[[]]") {
+                setRespuesta("Error no se pudo encontrar la informacion especificada");
+            } else {
+                let auxB = auxA.replace('[[{"watts":', "");
+                let resp = "La produccion total de hoy es de "+auxB.replace('}]]', "")+" kilowatts";
+                console.log(resp);
+                setRespuesta(resp);
+                speak({ text: resp })   
+            }
         } catch (error) {
             console.log(error);
         }
@@ -142,11 +166,15 @@ function Home (){
             const res = await axios.get('http://localhost:8800/produccionTotal/ayer');
             let aux = [res.data];
             let auxA = JSON.stringify(aux);
-            let auxB = auxA.replace('[[{"watts":', "");
-            let resp = "La produccion total de ayer fue de "+auxB.replace('}]]', "")+" kilowatts";
-            console.log(resp);
-            setRespuesta(resp);
-            speak({ text: resp })
+            if (auxA === "[[]]") {
+                setRespuesta("Error no se pudo encontrar la informacion especificada");
+            } else {
+                let auxB = auxA.replace('[[{"watts":', "");
+                let resp = "La produccion total de ayer fue de "+auxB.replace('}]]', "")+" kilowatts";
+                console.log(resp);
+                setRespuesta(resp);
+                speak({ text: resp })   
+            }
         } catch (error) {
             console.log(error);
         }
@@ -157,11 +185,15 @@ function Home (){
             const res = await axios.get('http://localhost:8800/produccionTotal/'+captura);
             let aux = [res.data];
             let auxA = JSON.stringify(aux);
-            let auxB = auxA.replace('[[{"watts":', "");
-            let resp = "La produccion total en la fecha especificada fue de "+auxB.replace('}]]', "")+" kilowatts";
-            console.log(resp);
-            setRespuesta(resp);
-            speak({ text: resp })
+            if (auxA === "[[]]") {
+                setRespuesta("Error no se pudo encontrar la informacion especificada");
+            } else {
+                let auxB = auxA.replace('[[{"watts":', "");
+                let resp = "La produccion total en la fecha especificada fue de "+auxB.replace('}]]', "")+" kilowatts";
+                console.log(resp);
+                setRespuesta(resp);
+                speak({ text: resp })   
+            }
         } catch (error) {
             console.log(error);
         }
@@ -256,9 +288,9 @@ function Home (){
 
         if (search.indexOf("tabla") !== -1 || search.indexOf("grafica") !== -1){
 
-            if(search.indexOf("temperatura") !== -1){
+            if(search.indexOf("temperatura") !== -1 || search.indexOf("clima") !== -1){
                 setShowTemp(true);
-            } else if(search.indexOf("panel") !== -1){
+            } else if(search.indexOf("panel") !== -1 || search.indexOf("paneles") !== -1){
                 setShowPanel(true);
             } else if(search.indexOf("total") !== -1){
                 setShowTotal(true);
@@ -374,7 +406,26 @@ function Home (){
                             <Accordion.Item eventKey="0">
                                 <Accordion.Header>Ejemplos</Accordion.Header>
                                 <Accordion.Body>
-                                    <p>Ejemplos</p>
+                                    <p>A continuación se muestran algunos ejemplos de las búsquedas que puede realizar:</p>
+                                    <br/>
+                                    <p>Para mostrar las tablas de datos:</p>
+                                    <p>Muéstrame la tabla de los paneles</p>
+                                    <p>Muéstrame la tabla de la temperatura</p>
+                                    <p>Muéstrame la tabla del total de watts producidos</p>
+                                    <br/>
+                                    <p>Para ver la cantidad de kilowatts producidos por un panel:</p>
+                                    <p>Muéstrame la producción del panel uno</p>
+                                    <br/>
+                                    <p>Pare ver la temperatura ambiental:</p>
+                                    <p>Muéstrame la temperatura de hoy</p>
+                                    <p>Muéstrame la temperatura de ayer</p>
+                                    <br/>
+                                    <p>Para ver la producción total de watts</p>
+                                    <p>Muéstrame la producción total de hoy</p>
+                                    <p>Muéstrame la producción total de ayer</p>
+                                    <br/>
+                                    <p>Si desea buscar un dato en una fecha especifica utilice el formato "día" de "mes" del "año":</p>
+                                    <p>Muéstrame la temperatura del 5 de agosto del 2023</p>
                                 </Accordion.Body>
                             </Accordion.Item>
                         </Accordion>
