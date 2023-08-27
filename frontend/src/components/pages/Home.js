@@ -62,6 +62,21 @@ function Home (){
         }
     }
 
+    const fetchPanelCapture = async (nombrePanel, captura)=>{
+        try {
+            const res = await axios.get('http://localhost:8800/panel/'+nombrePanel+'/'+captura);
+            let aux = [res.data];
+            let auxA = JSON.stringify(aux);
+            let auxB = auxA.replace('[[{"kilowatts":', "");
+            let resp = "El panel buscado tuvo una produccion de: "+auxB.replace('}]]', "")+" kilowatts";
+            console.log(resp);
+            setRespuesta(resp);
+            speak({ text: resp })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const fetchCurrentWeather = async () =>{
         try {
             const res = await axios.get('http://localhost:8800/temperatura/actual');
@@ -92,12 +107,27 @@ function Home (){
         }
     }
 
+    const fetchCaptureWeather = async (captura) =>{
+        try {
+            const res = await axios.get('http://localhost:8800/temperatura/'+captura);
+            let aux = [res.data];
+            let auxA = JSON.stringify(aux);
+            let auxB = auxA.replace('[[{"centigrados":', "");
+            let resp = "La temperatura de en la fecha especificada fue de "+auxB.replace('}]]', "")+" grados centigrados";
+            console.log(resp);
+            setRespuesta(resp);
+            speak({ text: resp })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const fetchCurrentTotal = async () =>{
         try {
             const res = await axios.get('http://localhost:8800/produccionTotal/actual');
             let aux = [res.data];
             let auxA = JSON.stringify(aux);
-            let auxB = auxA.replace('[[{"kilowatts":', "");
+            let auxB = auxA.replace('[[{"watts":', "");
             let resp = "La produccion total de hoy es de "+auxB.replace('}]]', "")+" kilowatts";
             console.log(resp);
             setRespuesta(resp);
@@ -112,8 +142,23 @@ function Home (){
             const res = await axios.get('http://localhost:8800/produccionTotal/ayer');
             let aux = [res.data];
             let auxA = JSON.stringify(aux);
-            let auxB = auxA.replace('[[{"kilowatts":', "");
-            let resp = "La produccion total de hoy es de "+auxB.replace('}]]', "")+" kilowatts";
+            let auxB = auxA.replace('[[{"watts":', "");
+            let resp = "La produccion total de ayer fue de "+auxB.replace('}]]', "")+" kilowatts";
+            console.log(resp);
+            setRespuesta(resp);
+            speak({ text: resp })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const fetchCaptureTotal = async (captura) =>{
+        try {
+            const res = await axios.get('http://localhost:8800/produccionTotal/'+captura);
+            let aux = [res.data];
+            let auxA = JSON.stringify(aux);
+            let auxB = auxA.replace('[[{"watts":', "");
+            let resp = "La produccion total en la fecha especificada fue de "+auxB.replace('}]]', "")+" kilowatts";
             console.log(resp);
             setRespuesta(resp);
             speak({ text: resp })
@@ -134,6 +179,7 @@ function Home (){
         </div>
         );
     }
+
     const handleListing = () => {
         setIsListening(true);
         microphoneRef.current.classList.add("listening");
@@ -141,55 +187,125 @@ function Home (){
           continuous: true,
         });
     };
+
     const stopHandle = () => {
         setIsListening(false);
 
         if(transcript !== ""){
-            if (transcript.indexOf("tabla") !== -1 || transcript.indexOf("grafica") !== -1){
-
-                if(transcript.indexOf("temperatura") !== -1){
-                    setShowTemp(true);
-                } else if(transcript.indexOf("panel") !== -1){
-                    setShowPanel(true);
-                } else if(transcript.indexOf("total") !== -1){
-                    setShowTotal(true);
-                } else setRespuesta("Error en busqueda");
-
-            } else if(transcript.indexOf("panel") !== -1){
-                if(transcript.indexOf("panel 1") !== -1 || transcript.indexOf("panel uno") !== -1){
-                    fetchPanelProd("panel1");
-                } else if(transcript.indexOf("panel 2") !== -1 || transcript.indexOf("panel dos") !== -1){
-                    fetchPanelProd("panel2");
-                } else if(transcript.indexOf("panel 3") !== -1 || transcript.indexOf("panel tres") !== -1){
-                    fetchPanelProd("panel3");
-                } else if(transcript.indexOf("panel 4") !== -1 || transcript.indexOf("panel cuatro") !== -1){
-                    fetchPanelProd("panel4");
-                } else if(transcript.indexOf("panel 5") !== -1 || transcript.indexOf("panel cinco") !== -1){
-                    fetchPanelProd("panel5");
-                }
-                
-            } else  if (transcript.indexOf("temperatura") !== -1 || transcript.indexOf("clima") !== -1) {
-                if (transcript.indexOf("ayer") !== -1 || transcript.indexOf("anterior") !== -1) {
-                    fetchPreviousWeather();
-                } else {
-                    fetchCurrentWeather();
-                }
-
-            } else if(transcript.indexOf("total") !== -1){
-                if (transcript.indexOf("ayer") !== -1 || transcript.indexOf("anterior") !== -1) {
-                    fetchPreviousTotal();
-                } else {
-                    fetchCurrentTotal();
-                }
-            } else setRespuesta("Error en busqueda");
+            generateResponse(transcript);
         } 
         microphoneRef.current.classList.remove("listening");
         SpeechRecognition.stopListening();
     };
+
     const handleReset = () => {
         resetTranscript();
         setRespuesta("");
     };
+
+    const generateResponse = (search) =>{
+        var auxDate="";
+        var fecha = "";
+        var dia= "";
+        var mes= "";
+        var año= "";
+
+        if(search.match(/(\d+ \w{2} \w{4,10} \w{2,3} \d{4})/g)){
+            auxDate =""+search.match(/(\d+ \w{2} \w{4,10} \w{2,3} \d{4})/g);
+            dia=""+auxDate.match(/(\d{1,2} \w{2})/g);
+            dia=""+dia.match(/(\d{1,2})/g);
+            mes=""+auxDate.match(/[a-zA-Z]{4,10}/g);
+            año=""+auxDate.match(/(\d{4})/g);
+
+            if(dia.length === 1){
+                dia="0"+dia;
+            }
+            switch (mes) {
+                case 'enero': mes="01"
+                    break;
+                case 'febrero': mes="02"
+                    break;
+                case 'marzo': mes="03"
+                    break;
+                case 'abril': mes="04"
+                    break;
+                case 'mayo': mes="05"
+                    break;
+                case 'junio': mes="06"
+                    break;
+                case 'julio': mes="07"
+                    break;
+                case 'agosto': mes="08"
+                    break;
+                case 'septiembre': mes="09"
+                    break;
+                case 'octubre': mes="10"
+                    break;
+                case 'noviembre': mes="11"
+                    break;
+                case 'diciembre': mes="12"
+                    break;
+                default:
+                    break;
+            }
+            
+            fecha=año+"-"+mes+"-"+dia;
+            
+            console.log(fecha);
+        }
+
+        if (search.indexOf("tabla") !== -1 || search.indexOf("grafica") !== -1){
+
+            if(search.indexOf("temperatura") !== -1){
+                setShowTemp(true);
+            } else if(search.indexOf("panel") !== -1){
+                setShowPanel(true);
+            } else if(search.indexOf("total") !== -1){
+                setShowTotal(true);
+            } else setRespuesta("Error en busqueda");
+
+        } else if(search.indexOf("panel") !== -1){
+
+            var panelN="";
+            if (search.indexOf("panel 1") !== -1 || search.indexOf("panel uno") !== -1) {
+                panelN="panel1"
+            } else if (search.indexOf("panel 2") !== -1 || search.indexOf("panel dos") !== -1) {
+                panelN="panel2"
+            } else if (search.indexOf("panel 3") !== -1 || search.indexOf("panel tres") !== -1) {
+                panelN="panel3"
+            } else if (search.indexOf("panel 4") !== -1 || search.indexOf("panel cuatro") !== -1) {
+                panelN="panel4"
+            } else if (search.indexOf("panel 5") !== -1 || search.indexOf("panel cinco") !== -1) {
+                panelN="panel5"
+            }
+
+            if (fecha !== "") {
+                fetchPanelCapture(panelN, fecha);
+            } else {
+                fetchPanelProd(panelN);
+            }
+           
+            
+        } else  if (search.indexOf("temperatura") !== -1 || search.indexOf("clima") !== -1) {
+
+            if (fecha !== "") {
+                fetchCaptureWeather(fecha);
+            } else if (search.indexOf("ayer") !== -1 || search.indexOf("anterior") !== -1) {
+                fetchPreviousWeather();
+            } else {
+                fetchCurrentWeather();
+            }
+
+        } else if(search.indexOf("total") !== -1){
+            if (fecha !== "") {
+                fetchCaptureTotal(fecha);
+            } else if (search.indexOf("ayer") !== -1 || search.indexOf("anterior") !== -1) {
+                fetchPreviousTotal();
+            } else {
+                fetchCurrentTotal();
+            }
+        } else setRespuesta("Error en Busqueda")
+    }
     
 
     return (
@@ -227,7 +343,7 @@ function Home (){
                                         <Button className="microphone-reset btn" onClick={handleReset}>
                                             Reiniciar
                                         </Button>
-                                        <Button onClick={() => setShowPanel(true)}>
+                                        <Button onClick={() => generateResponse("total 06 de agosto del 2023")}>
                                             aux
                                         </Button>
                                     </div>

@@ -15,7 +15,6 @@ function Navigationbar() {
           <Navbar.Brand as={Link} to="/" >Navbar</Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link as={Link} to="/" >Principal</Nav.Link>
-            <Nav.Link as={Link} to="/medicion" >Analisis de Datos</Nav.Link>
           </Nav>
         </Container>
       </Navbar>
