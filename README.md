@@ -6,6 +6,15 @@ ingrese a la carpeta backend y corra el siguiente comando en la terminal
 
 npm install
 
+configure la conexion acorde a sus datos
+
+const db = mysql.createConnection({
+    host:"",
+    user:"",
+    password:"",
+    database:""
+})
+
 ingrese en la carpeta frontend y corra el siguiente comando en la terminal
 
 npm install --legacy-peer-deps
