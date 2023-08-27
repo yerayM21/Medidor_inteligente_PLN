@@ -375,9 +375,6 @@ function Home (){
                                         <Button className="microphone-reset btn" onClick={handleReset}>
                                             Reiniciar
                                         </Button>
-                                        <Button onClick={() => generateResponse("total 06 de agosto del 2023")}>
-                                            aux
-                                        </Button>
                                     </div>
                                     <br/>
                                 </Container>
