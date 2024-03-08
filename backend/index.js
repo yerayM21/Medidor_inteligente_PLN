@@ -7,14 +7,84 @@ const db = mysql.createConnection({
     host:"localhost",
     user:"root",
     password:"",
-    database:"agrovoltaica"
+    database:"nueva"
 })
 
+const dbMeter = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "data_meter"
+})
+
+const dbNow = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "data_meter_now"
+})
+
+const dbTime = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "data_meter_time"
+})
+/*solicitud de datos a la base de datos mysql*/
 app.use(Express.json())
 app.use(cors())
 
 app.get("/", (req,res)=>{
     res.json("hola este es el backend")
+})
+
+app.get("/consumo_power",(req,res)=>{
+    const q = "SELECT * FROM total_power LIMIT 10"
+    dbMeter.query(q,(err,data)=>{
+        if(err) return res.json("Ha ocurrido un error")
+        return res.json(data)
+    })
+})
+
+app.get("/consume_time",(req,res)=>{
+    const q = "SELECT * FROM periodo_tiempo WHERE parametro = 'current_1' LIMIT 15"
+    dbTime.query(q,(err,data)=>{
+        if(err) return res.json("Ha ocurrido un error")
+        return res.json(data)
+    })
+})
+
+app.get("/consumo_now/consumo",(req,res)=>{
+    const q = "SELECT energyconsumed FROM info LIMIT 1"
+    dbNow.query(q,(err,data)=>{
+        if(err) return res.json("Ha ocurrido un error")
+        return res.json(data)
+    })
+})
+
+
+app.get("/consumo_now/voltage",(req,res)=>{
+    const q = "SELECT Voltage_V FROM info LIMIT 1"
+    dbNow.query(q,(err,data)=>{
+        if(err) return res.json("Ha ocurrido un error")
+        return res.json(data)
+    })
+})
+
+app.get("/consumo_now/current",(req,res)=>{
+    const q = "SELECT Current_A FROM info LIMIT 1"
+    dbNow.query(q,(err,data)=>{
+        if(err) return res.json("Ha ocurrido un error")
+        return res.json(data)
+    })
+})
+
+app.get("/consumo_now/power",(req,res)=>{
+    const q = "SELECT Power_W FROM info LIMIT 1"
+    dbNow.query(q,(err,data)=>{
+        if(err) return res.json("Ha ocurrido un error")
+        return res.json(data)
+    })
 })
 
 app.get("/panel", (req,res)=>{

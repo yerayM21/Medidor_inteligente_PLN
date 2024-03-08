@@ -4,7 +4,7 @@ import SpeechRecognition, {useSpeechRecognition} from "react-speech-recognition"
 import { useSpeechSynthesis } from 'react-speech-kit';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import axios from "axios";
-
+/*importacion de paqueterias de react, speech*/
 function Home (){
     const [respuesta, setRespuesta] = useState("");
     const { speak } = useSpeechSynthesis();
@@ -14,9 +14,10 @@ function Home (){
     const [showTotal, setShowTotal] = useState(false);
     const [showTemp, setShowTemp] = useState(false);
     const[panelData, setPanelData] = useState([]);
-    const[tempData, setTepmData] = useState([]);
+    const[PowerData, setPowerData] = useState([]);
     const[totalData, setTotalData] = useState([]);
 
+    /*solictudes de datos al back, datos que estan json, sirven para hacer la grafica estos datos*/
     useEffect(()=>{
         const fetchPanelData = async ()=>{
             try {
@@ -26,10 +27,10 @@ function Home (){
                 console.log(error);
             }
         }
-        const fetchTempData = async ()=>{
+        const fetchPowerData = async ()=>{
             try {
-                const res = await axios.get("http://localhost:8800/temperatura");
-                setTepmData(res.data);
+                const res = await axios.get("http://localhost:8800/consumo_power");
+                setPowerData(res.data);
             } catch (error) {
                 console.log(error);
             }
@@ -44,9 +45,10 @@ function Home (){
         }
         fetchPanelData();
         fetchTotalData();
-        fetchTempData();
+        fetchPowerData();
     }, []);
 
+    /*solicitud especifica de dato*/
     const fetchPanelProd = async (nombrePanel)=>{
         try {
             const res = await axios.get('http://localhost:8800/panel/'+nombrePanel);
@@ -85,16 +87,16 @@ function Home (){
         }
     }
 
-    const fetchCurrentWeather = async () =>{
+    const fetchCurrentPower = async () =>{
         try {
-            const res = await axios.get('http://localhost:8800/temperatura/actual');
+            const res = await axios.get('http://localhost:8800/consumo_now/power');
             let aux = [res.data];
             let auxA = JSON.stringify(aux);
             if (auxA === "[[]]") {
                 setRespuesta("Error no se pudo encontrar la informacion especificada");
             } else {
-                let auxB = auxA.replace('[[{"centigrados":', "");
-                let resp = "La temperatura de hoy es de "+auxB.replace('}]]', "")+" grados centigrados";
+                let auxB = auxA.replace('[[{"Power_W":', "");
+                let resp = "La potencia utilizada actual es "+auxB.replace('}]]', "")+" Watts";
                 console.log(resp);
                 setRespuesta(resp);
                 speak({ text: resp })   
@@ -103,6 +105,45 @@ function Home (){
             console.log(error);
         }
     }
+
+    const fetchCurrent = async () =>{
+        try {
+            const res = await axios.get('http://localhost:8800/consumo_now/current');
+            let aux = [res.data];
+            let auxA = JSON.stringify(aux);
+            if (auxA === "[[]]") {
+                setRespuesta("Error no se pudo encontrar la informacion especificada");
+            } else {
+                let auxB = auxA.replace('[[{"Current_A":', "");
+                let resp = "La corriente circulante es de "+auxB.replace('}]]', "")+" Amperios";
+                console.log(resp);
+                setRespuesta(resp);
+                speak({ text: resp })   
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const fetchCurrentvoltage = async () =>{
+        try {
+            const res = await axios.get('http://localhost:8800/consumo_now/voltage');
+            let aux = [res.data];
+            let auxA = JSON.stringify(aux);
+            if (auxA === "[[]]") {
+                setRespuesta("Error no se pudo encontrar la informacion especificada");
+            } else {
+                let auxB = auxA.replace('[[{"Voltage_V":', "");
+                let resp = "El voltaje es de  "+auxB.replace('}]]', "")+" Voltios";
+                console.log(resp);
+                setRespuesta(resp);
+                speak({ text: resp })   
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 
     const fetchPreviousWeather = async () =>{
         try {
@@ -198,11 +239,12 @@ function Home (){
             console.log(error);
         }
     }
-
+  /*generar graficas*/
     const dataP = panelData.map((panel)=>({label: panel.nombrePanel, bar: panel.kilowatts}));
-    const dataTemp = tempData.map((temperatura)=>({label: temperatura.captura, bar: temperatura.centigrados}));
+    const dataPower = PowerData.map((power)=>({label: power.fecha, bar: power.suma_total_value}));
     const dataTotal = totalData.map((total)=>({label: total.captura, bar: total.watts}));
 
+/*funciones para los botenes de escuchar*/
     const microphoneRef = useRef(null);
     if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
         return (
@@ -234,7 +276,7 @@ function Home (){
         resetTranscript();
         setRespuesta("");
     };
-
+/*generar busqueda de fecha*/
     const generateResponse = (search) =>{
         var auxDate="";
         var fecha = "";
@@ -285,12 +327,14 @@ function Home (){
             
             console.log(fecha);
         }
+/* palabras claves detectadas en la busque por voz*/
 
+/* envio de datos para la generacion de tablas*/
         if (search.indexOf("tabla") !== -1 || search.indexOf("grafica") !== -1){
 
-            if(search.indexOf("temperatura") !== -1 || search.indexOf("clima") !== -1){
+            if(search.indexOf("potencia") !== -1 || search.indexOf("watt") !== -1){
                 setShowTemp(true);
-            } else if(search.indexOf("panel") !== -1 || search.indexOf("paneles") !== -1){
+            } else if(search.indexOf("producción") !== -1 || search.indexOf("paneles") !== -1){
                 setShowPanel(true);
             } else if(search.indexOf("total") !== -1){
                 setShowTotal(true);
@@ -318,17 +362,29 @@ function Home (){
             }
            
             
-        } else  if (search.indexOf("temperatura") !== -1 || search.indexOf("clima") !== -1) {
+        } else  if (search.indexOf("potencia") !== -1 || search.indexOf("Watts") !== -1) {
 
             if (fecha !== "") {
                 fetchCaptureWeather(fecha);
             } else if (search.indexOf("ayer") !== -1 || search.indexOf("anterior") !== -1) {
                 fetchPreviousWeather();
             } else {
-                fetchCurrentWeather();
+                fetchCurrentPower();
             }
 
-        } else if(search.indexOf("total") !== -1){
+        } else if(search.indexOf("corriente") !== -1 || search.indexOf("amperaje") !== -1){
+            if(search.indexOf("actual") !== -1 || search.indexOf('hoy') !== -1){
+                fetchCurrent();
+            }else setRespuesta('Error en busqueda')
+            
+
+        }else if(search.indexOf("voltaje") !== -1 || search.indexOf("voltios") !== -1){
+            if(search.indexOf("actual") !== -1 || search.indexOf('hoy') !== -1){
+                fetchCurrentvoltage();
+            }else setRespuesta('Error en busqueda')
+            
+
+        }else if(search.indexOf("total") !== -1){
             if (fecha !== "") {
                 fetchCaptureTotal(fecha);
             } else if (search.indexOf("ayer") !== -1 || search.indexOf("anterior") !== -1) {
@@ -338,8 +394,7 @@ function Home (){
             }
         } else setRespuesta("Error en Busqueda")
     }
-    
-
+    /* parte body html*/
     return (
         <div className="Body">
             <div className="header">
@@ -407,15 +462,15 @@ function Home (){
                                     <br/>
                                     <p>Para mostrar las tablas de datos:</p>
                                     <p>Muéstrame la tabla de los paneles</p>
-                                    <p>Muéstrame la tabla de la temperatura</p>
+                                    <p>Muéstrame la tabla de la potencia</p>
                                     <p>Muéstrame la tabla del total de watts producidos</p>
                                     <br/>
                                     <p>Para ver la cantidad de kilowatts producidos por un panel:</p>
                                     <p>Muéstrame la producción del panel uno</p>
                                     <br/>
-                                    <p>Pare ver la temperatura ambiental:</p>
-                                    <p>Muéstrame la temperatura de hoy</p>
-                                    <p>Muéstrame la temperatura de ayer</p>
+                                    <p>Pare ver la potencia utilizada al momento:</p>
+                                    <p>Muéstrame la potencia de hoy</p>
+                                    <p>Muéstrame la potencia de ayer</p>
                                     <br/>
                                     <p>Para ver la producción total de watts</p>
                                     <p>Muéstrame la producción total de hoy</p>
@@ -507,14 +562,14 @@ function Home (){
                     onHide={() => setShowTemp(false)}
                     aria-labelledby="example-modal-sizes-title-lg">
                     <Modal.Header closeButton>
-                        <Modal.Title>Temperatura</Modal.Title>
+                        <Modal.Title>Potencia</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <ResponsiveContainer width="100%" aspect={2}>
                             <BarChart 
                                 width={500}
                                 height={300}
-                                data={dataTemp}
+                                data={dataPower}
                                 margin={{
                                   top: 5,
                                   right: 30,
