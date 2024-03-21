@@ -1,0 +1,190 @@
+{
+  "serial": "100000002fd2ee33",
+  "name": "House",
+  "lat": 52.3667,
+  "lng": 9.7167,
+  "time": "2023-11-01 05:35:12",
+  "softwareversion": "",
+  "ipaddress": "192.168.0.199",
+  "datasets": [
+    {
+      "time": "2023-10-31 23:35:13.301173",
+      "phases": [
+        {
+          "phase": 1,
+          "name": "phase 1",
+          "values": [
+            {
+              "type": "current",
+              "unity": "A",
+              "info": "",
+              "data": 0
+            },
+            {
+              "type": "voltage",
+              "unity": "V",
+              "info": "",
+              "data": 130.4146
+            },
+            {
+              "type": "power",
+              "unity": "W",
+              "info": "",
+              "data": 2.271321
+            },
+            {
+              "type": "cosphi",
+              "unity": "",
+              "info": "",
+              "data": 0.87129414
+            },
+            {
+              "type": "frequency",
+              "unity": "Hz",
+              "info": "",
+              "data": 59.981255
+            },
+            {
+              "type": "energyconsumed",
+              "unity": "Wh",
+              "info": "",
+              "data": 0.0006309225
+            },
+            {
+              "type": "energyproduced",
+              "unity": "Wh",
+              "info": "",
+              "data": 0
+            },
+            {
+              "type": "energybalanced",
+              "unity": "Wh",
+              "info": "warning: value infinity. set value to 0.0",
+              "data": 0
+            }
+          ]
+        },
+        {
+          "phase": 2,
+          "name": "phase 2",
+          "values": [
+            {
+              "type": "current",
+              "unity": "A",
+              "info": "",
+              "data": 0
+            },
+            {
+              "type": "voltage",
+              "unity": "V",
+              "info": "",
+              "data": 0.1298
+            },
+            {
+              "type": "power",
+              "unity": "W",
+              "info": "",
+              "data": 0
+            },
+            {
+              "type": "cosphi",
+              "unity": "",
+              "info": "",
+              "data": -0.0061358847
+            },
+            {
+              "type": "frequency",
+              "unity": "Hz",
+              "info": "",
+              "data": 62.1812
+            },
+            {
+              "type": "energyconsumed",
+              "unity": "Wh",
+              "info": "",
+              "data": 0
+            },
+            {
+              "type": "energyproduced",
+              "unity": "Wh",
+              "info": "",
+              "data": 0
+            },
+            {
+              "type": "energybalanced",
+              "unity": "Wh",
+              "info": "warning: value infinity. set value to 0.0",
+              "data": 0
+            }
+          ]
+        },
+        {
+          "phase": 3,
+          "name": "phase 3",
+          "values": [
+            {
+              "type": "current",
+              "unity": "A",
+              "info": "",
+              "data": 0.014597435
+            },
+            {
+              "type": "voltage",
+              "unity": "V",
+              "info": "",
+              "data": 0.0814
+            },
+            {
+              "type": "power",
+              "unity": "W",
+              "info": "",
+              "data": -0.019413
+            },
+            {
+              "type": "cosphi",
+              "unity": "",
+              "info": "",
+              "data": -0.20591064
+            },
+            {
+              "type": "frequency",
+              "unity": "Hz",
+              "info": "",
+              "data": 58.407482
+            },
+            {
+              "type": "energyconsumed",
+              "unity": "Wh",
+              "info": "",
+              "data": 0
+            },
+            {
+              "type": "energyproduced",
+              "unity": "Wh",
+              "info": "",
+              "data": 5.3925e-06
+            },
+            {
+              "type": "energybalanced",
+              "unity": "Wh",
+              "info": "warning: value infinity. set value to 0.0",
+              "data": 0
+            }
+          ]
+        },
+        {
+          "phase": 4,
+          "name": "phase 4",
+          "values": [
+            {
+              "type": "current",
+              "unity": "A",
+              "info": "",
+              "data": 0.014922338
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
